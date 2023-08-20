@@ -1,0 +1,94 @@
+import speech_recognition as sr
+import pyttsx3
+import pywhatkit
+import datetime
+import wikipedia
+import pyjokes
+
+listener = sr.Recognizer()
+engine = pyttsx3.init()
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[1].id)
+
+
+def talk(text):
+    engine.say(text)
+    engine.runAndWait()
+
+
+def take_command():
+
+    try:
+        with sr.Microphone() as source:
+            print("listening.....")
+            voice = listener.listen(source)
+            decoded_voice = listener.recognize_google(voice)
+            decoded_voice = decoded_voice.lower()
+        if 'jarvis' in decoded_voice:
+            decoded_voice = decoded_voice.replace('jarvis', '')
+            print(decoded_voice )
+
+
+    except:
+        pass
+
+    return decoded_voice
+
+
+def run_alexa(command_jarvis):
+    prompt = command_jarvis
+    print(prompt)
+
+    if 'play' in prompt:
+        song = prompt.replace('play', '')
+        talk('playing' + song)
+        pywhatkit.playonyt(song)
+
+    elif 'time' in prompt:
+        time = datetime.datetime.now().strftime('%I:%M %p')
+        print(time)
+        talk('Current time is' + time)
+
+    elif 'who is' in prompt:
+        person = prompt.replace('Who is', '')
+        print(person)
+        info = wikipedia.summary(person, 3)
+        print(info)
+        talk(info)
+    elif 'walk' in prompt:
+        talk('sorry, i have a headache')
+    elif 'date' in prompt:
+        talk(datetime.datetime.day)
+    elif 'who are you' in prompt:
+        talk('Hi Iam Jarvis developed by jeremiah xavier, a student of nirmala college muvattupuzha')
+        talk("i am not a human, so i can't speak like a human being")
+        talk('ask me for help to use my services effectively')
+
+    elif 'love' in prompt:
+        talk('sorry I am not interested in love  like my boss')
+
+    elif 'joke' in prompt:
+        message = pyjokes.get_joke()
+        print(message)
+        talk(message)
+    elif 'help' in prompt:
+        talk('okay i know you want some help ')
+        talk('The keywords that i understand is. play for playing videos in youtube.')
+        talk('who is, ..to know about anything')
+        talk('love, to propose me. joke for telling a joke')
+        talk('time, to tell the current time')
+        talk('so make sure that you include this keywords when you ask something')
+    else:
+        talk('Sorry i am not a human, i can understand certain keywords only, please repeat what you said ')
+        talk('otherwise you can ask me for help')
+
+
+while True:
+    command = take_command()
+    if 'stop' in command:
+        break
+    else:
+        run_alexa(command)
+
+
+
